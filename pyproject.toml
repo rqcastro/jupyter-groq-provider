@@ -1,0 +1,24 @@
+[project]
+name = "jupyter-groq-provider"
+version = "0.1.0"
+requires-python = ">=3.10, <3.13"
+dependencies = [
+    "jupyter-ai>=2.0.0",
+    "langchain>=0.2.0",
+    "groq>=0.11.0",
+    "requests"
+]
+
+[project.entry-points."jupyter_ai.model_providers"]
+groq = "jupyter_groq_provider:GroqProvider"
+
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

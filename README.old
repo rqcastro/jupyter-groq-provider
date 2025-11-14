@@ -1,0 +1,97 @@
+# jupyter-groq-provider
+
+This repository contains a lightweight Jupyter AI custom provider that calls the Groq chat completions API in an OpenAI-compatible style. The provider is implemented in `groq_provider.py` and was constructed following the extension instructions in `jupyter-custom-providers.md`.
+The package exposes an entry point so `jupyter-ai` can discover and register the provider when the package is installed.
+
+## What this does
+
+- Implements a `GroqChatModel` that sends OpenAI-style chat completion requests to the Groq API.
+- Provides a `GroqProvider` that exposes models and simple UI fields (for use with Jupyter AI).
+
+## Requirements
+
+- Python 3.8+
+
+This project depends on a few packages. The minimal dependencies are:
+
+- `requests` (HTTP client)
+- `jupyter_ai_magics` (the Jupyter AI provider framework) — may be available under a different package name in your environment
+- `langchain_core` (used for message and model base classes) — may be available under a different package name in your environment
+
+Note: package names for `jupyter_ai_magics` and `langchain_core` may differ on PyPI depending on how they were published; if those packages are not available via pip under these exact names, install them from your project environment or source distribution.
+
+## Installation
+
+1. Create and activate a virtual environment (recommended):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\activate
+```
+
+2. Install the required packages with pip (example). You can also install this package in editable mode so Jupyter can discover the provider via the entry point.
+
+```powershell
+pip install requests jupyter_ai_magics langchain_core
+# install this package in editable mode so the provider entry point is registered locally
+pip install -e .
+```
+
+If any package is not available on PyPI under those names, install the needed local packages or the appropriate names used by your environment.
+
+## Configuration
+
+This provider expects a Groq API key to be available via the `GROQ_API_KEY` environment variable. Set it before starting Jupyter or in your shell/session:
+
+```powershell
+setx GROQ_API_KEY "your_api_key_here"
+# or for the current cmd session only:
+set GROQ_API_KEY=your_api_key_here
+```
+
+Restart your terminal or editor if you used `setx` so the environment variable becomes available.
+
+## Usage
+
+1. Install the package (see Installation). When installed, `jupyter-ai` should discover the provider via the `jupyter_ai.model_providers` entry point defined in `pyproject.toml`.
+
+2. Option A — automatic discovery (recommended):
+
+- After `pip install -e .` (or a normal install), restart Jupyter. `jupyter-ai` will scan entry points and register providers. You should see a log message like `Registered model provider 'groq'` when the extension loads.
+
+3. Option B — manual import (development mode):
+
+```python
+from groq_provider import GroqProvider
+# If you import and instantiate the provider directly (development), it will use
+# the `GROQ_API_KEY` environment variable and register with the extension point used by jupyter-ai.
+provider = GroqProvider()
+# Use the provider via the jupyter-ai magics or your integration point.
+```
+
+The provider exposes configurable fields `temperature` and `max_tokens` and a default model (the first in the `models` list in `groq_provider.py`).
+
+How it integrates (short):
+
+- `GroqProvider` inherits from `BaseProvider` and a LangChain `BaseChatModel` (see `groq_provider.py`).
+- It defines `auth_strategy = EnvAuthStrategy(name="GROQ_API_KEY", keyword_param="api_key")`, so the Jupyter AI settings dialog will show the environment variable and pass the key to the model constructor.
+- The package declares an entry point in `pyproject.toml` under `[project.entry-points."jupyter_ai.model_providers"]` so `jupyter-ai` can discover `groq = "groq_provider:GroqProvider"`.
+
+## Notes and troubleshooting
+
+- The code sends requests to the Groq-compatible endpoint:
+  `https://api.groq.com/openai/v1/chat/completions`.
+- If you get authentication errors, verify `GROQ_API_KEY` is set and correct.
+- If `jupyter_ai_magics` or `langchain_core` classes are not found, install the correct packages or point PYTHONPATH to the local copies used in your setup.
+
+If you installed the package in editable mode and don't see the provider registered after restarting Jupyter, confirm the entry point is present in `pyproject.toml` and that the package was installed successfully (re-run `pip install -e .`).
+
+## Next steps (optional)
+
+- Add a `requirements.txt` to pin exact dependency names and versions.
+- Add an example notebook showing end-to-end usage with `jupyter_ai_magics` (I can add this for you).
+- Add tests for the request/response handling (mock the HTTP calls).
+
+---
+
+Created from `groq_provider.py` and `jupyter-custom-providers.md`. If anything in the repo changes (package names, API URL, model list), update this README accordingly.

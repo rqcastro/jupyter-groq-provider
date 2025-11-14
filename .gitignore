@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+*.ipnb
+.ipynb_checkpoints/
+.jupyter/
+.nbs/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Jupyter AI / Cache
+.jupyter-ai/
+.jupyter_ai/
+
+# Backup files
+*.bak
+*.tmp
+
+# Local settings
+.env
+.env.*
+
+# Compiled artifacts
+*.so
+
+# Python packaging artefacts
+*.whl
+
+# Any extra metadata
+*.egg-info/
