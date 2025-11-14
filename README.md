@@ -21,7 +21,7 @@ The provider integrates Groq’s API with the Jupyter AI ecosystem using the off
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/jupyter-groq-provider.git
+git clone https://github.com/rqcastro/jupyter-groq-provider.git
 cd jupyter-groq-provider
 ```
 
